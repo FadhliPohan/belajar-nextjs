@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   return (
     <>
-      <Layout>
+      <Layout metaTitle="Home" metaDescription="Ini adalah halaman home, informasi dapat anda lihat disini!">
         <p>Makan Apa Pagi Ini</p>
       </Layout>
     </>
