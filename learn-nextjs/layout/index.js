@@ -30,10 +30,10 @@ const Layout = (props) => {
       </Head>
       <main>
         <Header></Header>
-        <p className="text-2xl">Ini adalah nilai : {nilai}</p>
+        {/* <p className="text-2xl">Ini adalah nilai : {nilai}</p>
         <Button text="Tambah" onClick={tambah} />
         <Button text="Kurang" onClick={kurang} />
-        <p className="text-2xl">gass</p>
+        <p className="text-2xl">gass</p> */}
         {props.children}
         <Footer></Footer>
       </main>
