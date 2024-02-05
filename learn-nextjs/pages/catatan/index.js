@@ -22,15 +22,30 @@ const Catatan = () => {
   const router = useRouter();
   const [notes, setNotes] = useState();
 
-  useEffect(() => {
-    async function fetchingData() {
-      const res = await fetch(
-        "https://paace-f178cafcae7b.nevacloud.io/api/notes"
+  const HandleDelete = async (id) => {
+    try {
+      const response = await fetch(
+        `https://paace-f178cafcae7b.nevacloud.io/api/notes/delete/${id}`,
+        {
+          method: "DELETE",
+        }
       );
-      const listNotes = await res.json();
-      console.log(listNotes);
-      setNotes(listNotes);
-    }
+      const result = await response.json();
+      if (result?.success) {
+        fetchingData();
+      }
+    } catch (error) {}
+  };
+
+  async function fetchingData() {
+    const res = await fetch(
+      "https://paace-f178cafcae7b.nevacloud.io/api/notes"
+    );
+    const listNotes = await res.json();
+    console.log(listNotes);
+    setNotes(listNotes);
+  }
+  useEffect(() => {
     fetchingData();
   }, []);
   return (
@@ -68,7 +83,11 @@ const Catatan = () => {
                           >
                             Edit
                           </Button>
-                          <Button flex="1" colorScheme="red">
+                          <Button
+                            flex="1"
+                            colorScheme="red"
+                            onClick={() => HandleDelete(item?.id)}
+                          >
                             Delete
                           </Button>
                         </CardFooter>
