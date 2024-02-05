@@ -5,7 +5,7 @@ import React from "react";
 export default function Notes({ repo }) {
   // console.log(repo);
   return (
-    <Layout metaTitle="Profil">
+    <Layout metaTitle="Notes">
       {repo.data.map((item) => (
         <div className="mt-3">
           <Link href={`/notes/${item.id}`}>{item.title}</Link>
