@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { Spinner } from "@chakra-ui/react";
 import {
   Box,
   Flex,
@@ -12,15 +13,17 @@ import {
   Text,
   Button,
 } from "@chakra-ui/react";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQueries } from "@/hooks/useQueries";
 
 const Layout = dynamic(() => import("@/layout"));
 
 const Catatan = () => {
+  const { data, isLoading, isError } = useQueries({
+    prefixUrl: "https://paace-f178cafcae7b.nevacloud.io/api/notes",
+  });
   const router = useRouter();
-  const [notes, setNotes] = useState();
 
   const HandleDelete = async (id) => {
     try {
@@ -32,22 +35,11 @@ const Catatan = () => {
       );
       const result = await response.json();
       if (result?.success) {
-        fetchingData();
+        router.push("/catatan");
       }
     } catch (error) {}
   };
 
-  async function fetchingData() {
-    const res = await fetch(
-      "https://paace-f178cafcae7b.nevacloud.io/api/notes"
-    );
-    const listNotes = await res.json();
-    console.log(listNotes);
-    setNotes(listNotes);
-  }
-  useEffect(() => {
-    fetchingData();
-  }, []);
   return (
     <div>
       <Layout metaTitle="Catatan">
@@ -62,40 +54,52 @@ const Catatan = () => {
                   Tambah Catatan
                 </Button>
               </Flex>
-              <Flex>
-                <Grid templateColumns="repeat(3, 1fr)" gap={5}>
-                  {notes?.data?.map((item) => (
-                    <GridItem>
-                      <Card>
-                        <CardHeader>
-                          <Heading>{item?.title}</Heading>
-                        </CardHeader>
-                        <CardBody>
-                          <Text>{item?.description}</Text>
-                        </CardBody>
-                        <CardFooter justify="space-between" flexWrap="wrap">
-                          <Button
-                            onClick={() =>
-                              router.push(`/catatan/edit/${item?.id}`)
-                            }
-                            flex="1"
-                            variant="ghost"
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            flex="1"
-                            colorScheme="red"
-                            onClick={() => HandleDelete(item?.id)}
-                          >
-                            Delete
-                          </Button>
-                        </CardFooter>
-                      </Card>
-                    </GridItem>
-                  ))}
-                </Grid>
-              </Flex>
+              {isLoading ? (
+                <Flex alignItems="center" justifyContent="center">
+                  <Spinner
+                    thickness="4px"
+                    speed="0.65s"
+                    emptyColor="gray.200"
+                    color="blue.500"
+                    size="xl"
+                  />
+                </Flex>
+              ) : (
+                <Flex>
+                  <Grid templateColumns="repeat(3, 1fr)" gap={5}>
+                    {data?.data?.map((item) => (
+                      <GridItem>
+                        <Card>
+                          <CardHeader>
+                            <Heading>{item?.title}</Heading>
+                          </CardHeader>
+                          <CardBody>
+                            <Text>{item?.description}</Text>
+                          </CardBody>
+                          <CardFooter justify="space-between" flexWrap="wrap">
+                            <Button
+                              onClick={() =>
+                                router.push(`/catatan/edit/${item?.id}`)
+                              }
+                              flex="1"
+                              variant="ghost"
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              flex="1"
+                              colorScheme="red"
+                              onClick={() => HandleDelete(item?.id)}
+                            >
+                              Delete
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      </GridItem>
+                    ))}
+                  </Grid>
+                </Flex>
+              )}
             </Box>
           </CardBody>
         </Card>
