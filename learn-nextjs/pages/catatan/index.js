@@ -16,13 +16,22 @@ import {
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useQueries } from "@/hooks/useQueries";
+import useSWR from "swr";
+import fetcher from "@/utils/fercher";
 
 const Layout = dynamic(() => import("@/layout"));
 
 const Catatan = () => {
-  const { data, isLoading, isError } = useQueries({
-    prefixUrl: "https://paace-f178cafcae7b.nevacloud.io/api/notes",
-  });
+  const { data, error, isLoading } = useSWR(
+    "https://paace-f178cafcae7b.nevacloud.io/api/notes",
+    fetcher,
+    {
+      revalidateOnFocus: true,
+    }
+  );
+  // const { data, isLoading, isError } = useQueries({
+  //   prefixUrl: "https://paace-f178cafcae7b.nevacloud.io/api/notes",
+  // });
   const router = useRouter();
 
   const HandleDelete = async (id) => {
